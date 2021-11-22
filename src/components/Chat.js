@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {makeStyles} from "@material-ui/core/styles";
-import { Avatar,IconButton} from '@material-ui/core';
+import { Avatar,IconButton,InputBase} from '@material-ui/core';
 import SendIcon from "@material-ui/icons/Send";
 import Message from './Message';
 import ExitToApp from "@material-ui/icons/ExitToApp";
-
+import { PermPhoneMsg, StarTwoTone } from '@material-ui/icons';
+import SockJsClient from "react-stomp";
+import client from 'react-stomp';
+import { serverWebSocketUrl,topicsUrl } from '../URLs';
+import ChatInput from '../forms/ChatInput';
 
 export default function Chat()
 {
@@ -43,30 +47,30 @@ export default function Chat()
             overflowY:"auto",
             display:"flex",
             flexDirection:"column",
+            height:"90%"
 
         },
         chat_footer:
         {
            display:"flex",
-         //  flex:"1",
-           height:"100px",
+           flex:"1",
+           height:"7%",
            borderTop:"2px solid grey",
-
         },
         chat_input:
         {
-            height:"95%",
-            width:"95%",
-            
+            height:"60%",
+            width:"100%",
             border:"none",
-            marginLeft:"1px",
-            fontSize:"20px"
+            marginLeft:"10px",
+            fontSize:"20px",
 
         },
         chat_form:
         {
             display:"flex",
             flex:"1",
+            height:"100px",
         },
         button:
         {
@@ -85,6 +89,22 @@ export default function Chat()
         }
     }));
     const classes=useStyle();
+    let [messageText,setMessageText]=useState("");
+    let [messages,setMessages]=useState([]);
+    const[clientRef,setClientRef]=useState(null);
+
+    function sendMessage(messagetxt)
+    {
+        clientRef.sendMessage('/app/user-all', JSON.stringify({  
+            message: messagetxt
+        }));
+        setMessageText("");
+    }
+
+    function handleOnChange(e)
+    {
+        setMessageText(e.target.value);
+    }
     return (
         <div className={classes.chat}>
             <div className={classes.chat_header}>
@@ -95,27 +115,24 @@ export default function Chat()
            
             </div>
             <div className={classes.chat_body}>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
-            <Message/>
+            {
+            messages.map(msg=> <Message txt={msg}/>)}
             </div>
-            <div className={classes.chat_footer}>
-                <form className={classes.chat_form}>
-                <input type="text" placeholder="Type a message..." className={classes.chat_input}/>
-                <IconButton className={classes.button}><SendIcon/></IconButton>
-                </form>
+            <div className={classes.chat_footer}> 
+                <ChatInput setMessageText={setMessageText} messageText={messageText} sendMessage={sendMessage} handleOnChange={handleOnChange} />
             </div>
+        <SockJsClient url={serverWebSocketUrl}
+        topics={[topicsUrl]}
+        onConnect={()=>{console.log("Connected");}}
+        onDisconnect={()=>{console.log("Disconnected");}}
+        onMessage={(msg)=>{
+            setMessages([...messages,msg]);
+            console.log(msg);
+        }}
+        ref={(client)=>{
+            setClientRef(client);
+        }}>
+        </SockJsClient>
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import { Avatar, makeStyles } from "@material-ui/core";
 import React from "react";
 
-export default function Message()
+export default function Message(props)
 {
     const useStyle=makeStyles((theme)=>({
         message:
@@ -55,7 +55,7 @@ export default function Message()
             </div>
             <div className={classes.message_info}>
                 <div className={classes.message_name}>Jovan</div>
-                    <div className={classes.message_text}>HAHAHHAHAHHAHAHA</div>
+                    <div className={classes.message_text}>{props.txt.message}</div>
                     <div className={classes.message_timestemp}>10:00 PM</div>
                 </div>
         </div>
