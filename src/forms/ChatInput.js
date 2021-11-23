@@ -12,7 +12,7 @@ export default function ChatInput(props)
     const useStyle = makeStyles((theme) =>({
     chat_input:
     {
-        height:"60%",
+        height:"100%",
         width:"100%",
         border:"none",
         marginLeft:"10px",
@@ -22,18 +22,19 @@ export default function ChatInput(props)
     button:
     {
         background:"#ffab6f",
-        width:"50px",
-        height:"50px",
-        marginTop: "5px",
-        marginBottom: "5px",
-        marginLeft: "5px",
-        marginRight: "5px",
+        width:"5%",
+        height:"70%",
+        marginTop: "1%",
+        marginBottom: "1%",
+        marginLeft: "1%",
+        marginRight: "1%",
     },
     chat_form:
         {
             display:"flex",
             flex:"1",
-            height:"100px",
+            height:"100%",
+           
         },
   
 }));
@@ -49,7 +50,12 @@ function sendMessage()
     setMessageTextPom("");
 }
     return(<div className={classes.chat_form}>
-    <InputBase placeholder="Type a message..." className={classes.chat_input} value={messageTextPom} onChange={handleOnChange}/>
+    <InputBase placeholder="Type a message..." className={classes.chat_input} value={messageTextPom} onChange={handleOnChange}
+    onKeyDown={(e)=>{ if(e.key=="Enter")
+    {
+        e.preventDefault();
+        sendMessage();
+    }}}/>
     <IconButton className={classes.button} onMouseDown={sendMessage}><SendIcon/></IconButton>
     </div>);
 }

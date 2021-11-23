@@ -47,7 +47,7 @@ export default function Chat()
             overflowY:"auto",
             display:"flex",
             flexDirection:"column",
-            height:"90%"
+            height:"80%"
 
         },
         chat_footer:
@@ -95,10 +95,13 @@ export default function Chat()
 
     function sendMessage(messagetxt)
     {
+        if(messagetxt!=="")
+        {
         clientRef.sendMessage('/app/user-all', JSON.stringify({  
             message: messagetxt
         }));
         setMessageText("");
+        }
     }
 
     function handleOnChange(e)
@@ -116,15 +119,20 @@ export default function Chat()
             </div>
             <div className={classes.chat_body}>
             {
-            messages.map(msg=> <Message txt={msg}/>)}
+            messages.map(msg=> <Message txt={msg}/>)
+            }
             </div>
             <div className={classes.chat_footer}> 
                 <ChatInput setMessageText={setMessageText} messageText={messageText} sendMessage={sendMessage} handleOnChange={handleOnChange} />
             </div>
         <SockJsClient url={serverWebSocketUrl}
         topics={[topicsUrl]}
-        onConnect={()=>{console.log("Connected");}}
-        onDisconnect={()=>{console.log("Disconnected");}}
+        onConnect={()=>{console.log("Connected");
+        clientRef.sendMessage('/app/user-all', JSON.stringify({  
+            message: "online sam"
+        }));}}
+        onDisconnect={()=>{console.log("Disconnected");
+        }}
         onMessage={(msg)=>{
             setMessages([...messages,msg]);
             console.log(msg);
