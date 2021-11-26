@@ -3,8 +3,11 @@ import Form from "react-bootstrap/Form";
 import {makeStyles,fade} from "@material-ui/core/styles";
 import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
-import {Link} from "react-router-dom";
 import Background from "../background.jpg";
+import {loginEnd,signUpUrl} from "../URLs";
+import {Navigate,Link} from "react-router-dom";
+
+
 
 
 
@@ -90,18 +93,66 @@ export default function Signup(props) {
   const [userName, setUsername] = useState("");
   const [passw, setPassword] = useState("");
   const [repassw,setRePassword]=useState("");
-  const [authenticationPassed,setAuthenticationPassed]=useState(false);
+  const [email,setEmail]=useState("");
+  const [redirect,setRedirect]=useState(false);
 
 
   function validateForm() {
-    return userName.length > 0 && passw.length > 0 && repassw.length>0;
+    return userName.length > 0 && passw.length > 0 && repassw.length>0 && email.length>0;
   }
-
-  function storeUser(user)
+  function validateEmail()
   {
-   
-
+    if (email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/))
+    return true;
+    else
+    {
+    alert("Invalid email");
+    return false;
+    }
   }
+  function validatePassword()
+  {
+    if(passw===repassw)
+    return true;
+    else
+    {
+      alert("Password and confirm password does not match")
+      return false;
+    }
+  }
+  function validateUsername()
+  {
+    if(userName.match(/^[a-zA-Z0-9_]+$/))
+    {
+      return true;
+    }
+    else
+    {
+      alert("Only alphanumeric characters and underscore allowed in USERNAME.");
+      return false;
+    }
+  }
+  function validate()
+  {
+    return validateEmail() && validatePassword() && validateUsername();
+  }
+
+  function createUser(user)
+  {
+   if(validate())
+   {
+    let user={username:userName,password:passw,email:email};
+    axios.post(signUpUrl,user).then(()=>{setRedirect(true); setRedirect(true);}).catch(function (error)
+    {
+      if(error.response.status)
+      {
+        alert("This username is already taken. Please choose another name.");
+      }
+      else
+      alert("The error occurred due to server problem.");
+    });
+  }
+} 
 
   function handleSubmit(event) 
   {
@@ -111,9 +162,9 @@ export default function Signup(props) {
  
    const classes=useStyle();
 
-  if(authenticationPassed)
+  if(redirect)
   {
-    
+    return <Navigate to={loginEnd}/>
   }
 
   return (
@@ -132,6 +183,16 @@ export default function Signup(props) {
             type="username"
             value={userName}
             onChange={(e) => setUsername(e.target.value)}
+          />
+        </FormGroup>
+        <FormGroup size="large" controlid="email">
+          <FormLabel className={classes.label}>email :</FormLabel>
+          <Form.Control
+            className={classes.createInput}
+            autoFocus
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </FormGroup>
         <FormGroup size="large" controlid="password">
@@ -155,9 +216,9 @@ export default function Signup(props) {
         <Link to={"/"} className={classes.link}>Already have an account? Sign in</Link>
       </Form>
      
-      <Button block size="large" type="submit" disabled={!validateForm()} className={classes.button}>
+      <Button block size="large" type="submit" disabled={!validateForm()} className={classes.button} onMouseDown={()=>createUser()}>
           Create
       </Button>
      </div>
   );
-}
+  }

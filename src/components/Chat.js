@@ -128,9 +128,10 @@ export default function Chat()
         <SockJsClient url={serverWebSocketUrl}
         topics={[topicsUrl]}
         onConnect={()=>{console.log("Connected");
-        clientRef.sendMessage('/app/user-all', JSON.stringify({  
-            message: "online sam"
-        }));}}
+      //  clientRef.sendMessage('/app/user-all', JSON.stringify({  
+        //    message: "online sam"
+      //  }));
+    }}
         onDisconnect={()=>{console.log("Disconnected");
         }}
         onMessage={(msg)=>{

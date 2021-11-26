@@ -6,7 +6,7 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,emailTokenFrontEnd} from "../URLs";
+import { loginUrl,homeFrontEnd } from "../URLs";
 
 
 
@@ -47,20 +47,22 @@ export default function Login(props) {
     label:
     {
       fontSize:"20px",
-      fontFamily:"Lucida Handwriting",
+      fontFamily:"Arial",
       padding: "10px",
       alignSelf:"center",
       color:"white",
       fontWeight:"bold",
       textShadow: "2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 1px 1px black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black",
     },
-
     title:
     {
-      textAlign:"center",
-      fontSize:"30px",
+      fontSize:"20px",
       fontFamily:"Lucida Handwriting",
-      textShadow: "2px 0 0 #d2d9db, -2px 0 0 #d2d9db, 0 2px 0 #d2d9db, 0 -2px 0 #d2d9db, 1px 1px #d2d9db, -1px -1px 0 #d2d9db, 1px -1px 0 #d2d9db, -1px 1px 0 #d2d9db",
+      padding: "10px",
+      alignSelf:"center",
+      color:"white",
+      fontWeight:"bold",
+      textShadow: "2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 1px 1px black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black",
     },
 
   
@@ -90,23 +92,18 @@ export default function Login(props) {
  }))
 
 
-  const [userName, setUsername] = useState("");
-  const [passw, setPassword] = useState("");
+  const [emailToken, setEmailToken] = useState("");
   const [authenticationPassed,setAuthenticationPassed]=useState(false);
 
   function validateForm() {
-    return userName.length > 0 && passw.length > 0;
+    return emailToken.length > 0;
   }
 
-  function storeUser(user)
-  {
-    localStorage.setItem("user",JSON.stringify(user));
-  }
 
   function handleSubmit() 
   {
-    let credentials={username:userName,password:passw};
-    axios.post(loginUrl,credentials).then(res=>{console.log(res.data);storeUser(res.data);setAuthenticationPassed(true)}).catch(function (error)
+   /* let emailTokenSend={emailToken};
+  //  axios.post(nekaAdresa,credentials).then(res=>{console.log(res.data);storeUser(res.data);setAuthenticationPassed(true)}).catch(function (error)
     {
       if(error.response.status===401)
       {
@@ -116,7 +113,7 @@ export default function Login(props) {
       {
         alert("The error occurred due to server problem.");
       }
-    });
+    });*/
   }
 
  
@@ -124,7 +121,7 @@ export default function Login(props) {
 
   if(authenticationPassed)
   {
-    return <Navigate to={emailTokenFrontEnd}/>
+    return <Navigate to={homeFrontEnd}/>
   }
 
   return (
@@ -132,32 +129,21 @@ export default function Login(props) {
     <div className={classes.root}>
       
       <Form>
-          <div className={classes.title}>
-      <h1 className={classes.label}>Login :</h1>
+          <div>
+      <h1 className={classes.title}>Token :</h1>
             </div>
-        <FormGroup size="large" controlid="username">
-          <FormLabel className={classes.label}>Username :</FormLabel>
+        <FormGroup size="large" controlid="token">
+          <FormLabel className={classes.label}>Enter the TOKEN you received at your e-mail :</FormLabel>
           <Form.Control
             className={classes.createInput}
             autoFocus
-            type="username"
-            value={userName}
-            onChange={(e) => setUsername(e.target.value)}
+            value={emailToken}
+            onChange={(e) => setEmailToken(e.target.value)}
           />
         </FormGroup>
-        <FormGroup size="large" controlid="password">
-          <FormLabel className={classes.label}>Password :</FormLabel>
-          <Form.Control
-            className={classes.createInput}
-            type="password"
-            value={passw}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FormGroup>
-      <Link to={"/signup"} className={classes.link}>Create account</Link>
       </Form>
-        <Button block size="large" type="submit" disabled={!validateForm()} className={classes.button} onMouseDown={()=>handleSubmit()}>
-          Login
+        <Button block size="large" disabled={!validateForm()} className={classes.button} onMouseDown={()=>handleSubmit()}>
+          VERIFY
       </Button>
      </div>
   );

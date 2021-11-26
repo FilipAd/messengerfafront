@@ -7,6 +7,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import { Grid } from '@material-ui/core';
 import { BrowserRouter as Router,Route,Routes} from "react-router-dom";
 import Signup from "./forms/Signup";
+import EmailTokenInput from "./forms/EmailTokenInput";
 
 
 /*function App() 
@@ -44,13 +45,14 @@ import Signup from "./forms/Signup";
 }*/
 function App() 
 {
-
   return (
     <Router>
       <Routes>
       <Route exact path='/' element={<Login/>} />
       <Route exact path='/signup' element={<Signup/>}/>
       <Route exect path='/home' element={<Home/>} />
+      <Route exact path='/login' element={<Login/>} />
+      <Route exact path='/emailtoken' element={<EmailTokenInput/>} />
     </Routes>
     </Router>
   

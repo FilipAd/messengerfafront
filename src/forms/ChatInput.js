@@ -51,7 +51,7 @@ function sendMessage()
 }
     return(<div className={classes.chat_form}>
     <InputBase placeholder="Type a message..." className={classes.chat_input} value={messageTextPom} onChange={handleOnChange}
-    onKeyDown={(e)=>{ if(e.key=="Enter")
+    onKeyDown={(e)=>{ if(e.key==="Enter")
     {
         e.preventDefault();
         sendMessage();
