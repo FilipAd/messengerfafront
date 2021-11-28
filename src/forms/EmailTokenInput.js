@@ -6,7 +6,7 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,homeFrontEnd } from "../URLs";
+import { loginUrl,homeFrontEnd,emailTokenSubmitUrl} from "../URLs";
 
 
 
@@ -93,7 +93,7 @@ export default function Login(props) {
 
 
   const [emailToken, setEmailToken] = useState("");
-  const [authenticationPassed,setAuthenticationPassed]=useState(false);
+  const [redirectToHome,setRedirectToHome]=useState(false);
 
   function validateForm() {
     return emailToken.length > 0;
@@ -102,24 +102,18 @@ export default function Login(props) {
 
   function handleSubmit() 
   {
-   /* let emailTokenSend={emailToken};
-  //  axios.post(nekaAdresa,credentials).then(res=>{console.log(res.data);storeUser(res.data);setAuthenticationPassed(true)}).catch(function (error)
-    {
-      if(error.response.status===401)
-      {
-        alert("The user name or password is incorrect");
-      }
-      else
-      {
-        alert("The error occurred due to server problem.");
-      }
-    });*/
+    let userFromStorage=JSON.parse(localStorage.getItem("user"));
+    let emailTokenSend={emailToken:emailToken};
+    axios.post(emailTokenSubmitUrl+userFromStorage.id,emailTokenSend).then(res=>{console.log(res.data);(res.data)?setRedirectToHome(true):alert("Invalid Code.Try Again")}).catch(function (error)
+    { 
+        alert(error); 
+    });
   }
 
  
    const classes=useStyle();
 
-  if(authenticationPassed)
+  if(redirectToHome)
   {
     return <Navigate to={homeFrontEnd}/>
   }

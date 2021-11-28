@@ -189,7 +189,6 @@ export default function Signup(props) {
           <FormLabel className={classes.label}>email :</FormLabel>
           <Form.Control
             className={classes.createInput}
-            autoFocus
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

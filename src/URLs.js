@@ -14,6 +14,14 @@ export const homeFrontEnd="/home";
 
 export const emailTokenFrontEnd="/emailtoken";
 
+export const emailSendTokenEnd="/sendemail/";
+
+export const emailTokenSubmitEnd="/emailtokenverification/"
+
+export const emailSendTokenUrl=serverUrl+emailSendTokenEnd;
+
+export const emailTokenSubmitUrl=serverUrl+emailTokenSubmitEnd;
+
 export const serverWebSocketUrl=serverUrl+webSocketUrl;
 
 export const signUpUrl=serverUrl+signUpEnd;
