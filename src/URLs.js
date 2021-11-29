@@ -10,13 +10,17 @@ export const signUpEnd="/sign-up/";
 
 export const loginEnd="/login/";
 
-export const homeFrontEnd="/home";
+export const homeFrontEnd="/home/";
 
-export const emailTokenFrontEnd="/emailtoken";
+export const emailTokenFrontEnd="/emailtoken/";
 
 export const emailSendTokenEnd="/sendemail/";
 
 export const emailTokenSubmitEnd="/emailtokenverification/"
+
+export const onlineMembersEnd="/onlinemembers/";
+
+export const onlineMembersUrl=serverUrl+onlineMembersEnd;
 
 export const emailSendTokenUrl=serverUrl+emailSendTokenEnd;
 

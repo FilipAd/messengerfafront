@@ -103,6 +103,13 @@ export default function Chat()
         setMessageText("");
         }
     }
+    function showMeOnline()
+    {
+        clientRef.sendMessage('/app/online',JSON.stringify({  
+            username: "MARKO"
+        }));
+     
+    }
 
     function handleOnChange(e)
     {
@@ -126,8 +133,8 @@ export default function Chat()
                 <ChatInput setMessageText={setMessageText} messageText={messageText} sendMessage={sendMessage} handleOnChange={handleOnChange} />
             </div>
         <SockJsClient url={serverWebSocketUrl}
-        topics={[topicsUrl]}
-        onConnect={()=>{console.log("Connected");
+        topics={[topicsUrl,"/topic/alo"]}
+        onConnect={()=>{console.log("Connected");showMeOnline()
       //  clientRef.sendMessage('/app/user-all', JSON.stringify({  
         //    message: "online sam"
       //  }));

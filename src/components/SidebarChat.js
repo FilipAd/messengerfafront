@@ -2,7 +2,7 @@ import React from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import { Avatar } from '@material-ui/core';
 
-export default function SidebarChat()
+export default function SidebarChat(props)
 {
     const useStyle = makeStyles((theme) =>({
         sidebar_chat:
@@ -34,7 +34,7 @@ export default function SidebarChat()
     <div className={classes.sidebar_chat}>
         <Avatar className={classes.sidebar_avatar}/>
         <div className={classes.sidebar_chat_info}>
-            <h3>Ime i prezime </h3>
+            <h3>{props.username}</h3>
         </div>
     </div>
     );

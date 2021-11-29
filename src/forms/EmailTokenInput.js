@@ -10,14 +10,10 @@ import { loginUrl,homeFrontEnd,emailTokenSubmitUrl} from "../URLs";
 
 
 
-export default function Login(props) {
+export default function EmailTokenInput(props) {
 
   const useStyle = makeStyles((theme) =>({
 
-   
-
-     
-   
     root:
     {
       width:"100%",
@@ -93,18 +89,25 @@ export default function Login(props) {
 
 
   const [emailToken, setEmailToken] = useState("");
+  const [emailTokenFromDB,setEmailTokenFromDB]=useState("");
   const [redirectToHome,setRedirectToHome]=useState(false);
+  let userFromStorage=JSON.parse(localStorage.getItem("user"));
 
   function validateForm() {
     return emailToken.length > 0;
   }
-
-
+  function handleEmailTokenVerificationAccepted(eToken)
+  {
+    
+    sessionStorage.setItem("emailTokenStored",eToken)
+    console.log("evo ga iz storidza"+sessionStorage.getItem("emailTokenStored"));
+    props.setEmailToken(eToken);
+    setRedirectToHome(true)
+  }
   function handleSubmit() 
   {
-    let userFromStorage=JSON.parse(localStorage.getItem("user"));
     let emailTokenSend={emailToken:emailToken};
-    axios.post(emailTokenSubmitUrl+userFromStorage.id,emailTokenSend).then(res=>{console.log(res.data);(res.data)?setRedirectToHome(true):alert("Invalid Code.Try Again")}).catch(function (error)
+    axios.post(emailTokenSubmitUrl+userFromStorage.id,emailTokenSend).then(res=>{console.log(res.data);(res.data)?handleEmailTokenVerificationAccepted(emailToken):alert("Invalid Code.Try Again")}).catch(function (error)
     { 
         alert(error); 
     });
@@ -115,7 +118,7 @@ export default function Login(props) {
 
   if(redirectToHome)
   {
-    return <Navigate to={homeFrontEnd}/>
+    return <Navigate to={homeFrontEnd+sessionStorage.getItem("emailTokenStored")}/>
   }
 
   return (

@@ -1,3 +1,4 @@
+import React,{useState} from "react";
 import './App.css';
 import Login from './forms/Login';
 import Home from './components/Home';
@@ -45,14 +46,15 @@ import EmailTokenInput from "./forms/EmailTokenInput";
 }*/
 function App() 
 {
+  let [emailToken,setEmailToken]=useState(sessionStorage.getItem("emailTokenStored"));
   return (
     <Router>
       <Routes>
       <Route exact path='/' element={<Login/>} />
       <Route exact path='/signup' element={<Signup/>}/>
-      <Route exect path='/home' element={<Home/>} />
+      <Route exect path={`/home/${emailToken}`} element={<Home/>} />
       <Route exact path='/login' element={<Login/>} />
-      <Route exact path='/emailtoken' element={<EmailTokenInput/>} />
+      <Route exact path='/emailtoken' element={<EmailTokenInput setEmailToken={setEmailToken}/>} />
     </Routes>
     </Router>
   

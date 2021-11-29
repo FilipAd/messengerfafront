@@ -141,8 +141,8 @@ export default function Signup(props) {
   {
    if(validate())
    {
-    let user={username:userName,password:passw,email:email};
-    axios.post(signUpUrl,user).then(()=>{setRedirect(true); setRedirect(true);}).catch(function (error)
+    let user={username:userName,password:passw,email:email,online:0};
+    axios.post(signUpUrl,user).then(()=>{setRedirect(true);}).catch(function (error)
     {
       if(error.response.status)
       {

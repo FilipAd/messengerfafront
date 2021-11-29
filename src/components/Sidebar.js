@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import SidebarChat from './SidebarChat';
@@ -7,7 +7,8 @@ import { Avatar, IconButton } from '@material-ui/core';
 import ComputerIcon from "@material-ui/icons/Computer";
 import localIpUrl from 'local-ip-url';
 import localIpV4Address from 'local-ipv4-address';
-
+import {onlineMembersEnd, onlineMembersUrl} from "../URLs"
+import axios from 'axios';
 
 
 
@@ -25,13 +26,11 @@ export default function Sidebar()
         },
         sidebar_header:
         {
-            flex:1,
+            flex:0.07,
             height:"80px",
             display:"flex",
             background:"#ff964c",
-            boxShadow: "0 2px 4px grey",
-            height:"60px",
-            
+            boxShadow: "0 2px 4px grey", 
         },
         sidebar_search_input:
         {
@@ -105,6 +104,8 @@ export default function Sidebar()
         }
     }))
     const classes=useStyle();
+    let [onlineMembers,setOnlineMembers]=useState([]);
+    React.useEffect(()=>{axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log(res.data)}).catch(function (error){console.log(error)});},[]);
     return(<div className={classes.sidebar}> 
             <div className={classes.sidebar_header}>
                 <div className={classes.sidebar_search_input}>
@@ -124,22 +125,9 @@ export default function Sidebar()
                 
             </div>
             <div className={classes.sidebar_chats}>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/>
-            <SidebarChat/> 
+            {
+                onlineMembers.map(member=><SidebarChat username={member.username}/>)
+            }
             </div>
 
         </div>
