@@ -6,7 +6,7 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,homeFrontEnd,emailTokenSubmitUrl} from "../URLs";
+import { loginUrl,homeFrontEnd,emailTokenSubmitUrl,onlineStatusEnd, membersUrl} from "../URLs";
 
 
 
@@ -97,11 +97,13 @@ export default function EmailTokenInput(props) {
     return emailToken.length > 0;
   }
   function handleEmailTokenVerificationAccepted(eToken)
-  {
-    
+  { 
     sessionStorage.setItem("emailTokenStored",eToken)
-    console.log("evo ga iz storidza"+sessionStorage.getItem("emailTokenStored"));
     props.setEmailToken(eToken);
+    axios.put(membersUrl+userFromStorage.id+onlineStatusEnd,2).then("you are online now").catch(function (error)
+  {
+    console.log(error);
+  });
     setRedirectToHome(true)
   }
   function handleSubmit() 

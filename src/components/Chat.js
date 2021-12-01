@@ -9,8 +9,10 @@ import SockJsClient from "react-stomp";
 import client from 'react-stomp';
 import { serverWebSocketUrl,topicsUrl } from '../URLs';
 import ChatInput from '../forms/ChatInput';
+import axios from "axios";
+import {membersUrl,onlineStatusEnd} from "../URLs";
 
-export default function Chat()
+export default function Chat(props)
 {
     const useStyle = makeStyles((theme) =>({
         chat:
@@ -88,57 +90,68 @@ export default function Chat()
            alignSelf:"right",
         }
     }));
+    const me=JSON.parse(localStorage.getItem("user"));
     const classes=useStyle();
     let [messageText,setMessageText]=useState("");
     let [messages,setMessages]=useState([]);
     const[clientRef,setClientRef]=useState(null);
+  
 
-    function sendMessage(messagetxt)
+  /*  function sendMessage(messagetxt,from)
     {
         if(messagetxt!=="")
         {
         clientRef.sendMessage('/app/user-all', JSON.stringify({  
-            message: messagetxt
+            message: messagetxt,
+            name:from
+
         }));
         setMessageText("");
         }
-    }
-    function showMeOnline()
+    }*/
+
+    function sendMessage(messagetxt,from)
     {
-        clientRef.sendMessage('/app/online',JSON.stringify({  
-            username: "MARKO"
-        }));
-     
+        if(messagetxt!=="")
+        {
+        let msg={name:me.username,message:messagetxt};
+        setMessages([...messages,msg]);
+        clientRef.sendMessage('/app/websocket-chat/'+props.receiver,JSON.stringify({message: messagetxt,name:me.username}));
+        setMessageText("");
+        }
     }
 
     function handleOnChange(e)
     {
         setMessageText(e.target.value);
     }
+
     return (
         <div className={classes.chat}>
             <div className={classes.chat_header}>
             <Avatar className={classes.chat_header_avatar}/>
             <div className={classes.chat_header_name}>
-                <h2>Ime i Prezime</h2>
+                <h2>{props.receiver}</h2>
             </div>
            
             </div>
             <div className={classes.chat_body}>
             {
-            messages.map(msg=> <Message txt={msg}/>)
+            messages.map(msg=> <Message msg={msg}/>)
             }
             </div>
             <div className={classes.chat_footer}> 
                 <ChatInput setMessageText={setMessageText} messageText={messageText} sendMessage={sendMessage} handleOnChange={handleOnChange} />
             </div>
+            
         <SockJsClient url={serverWebSocketUrl}
-        topics={[topicsUrl,"/topic/alo"]}
-        onConnect={()=>{console.log("Connected");showMeOnline()
-      //  clientRef.sendMessage('/app/user-all', JSON.stringify({  
-        //    message: "online sam"
-      //  }));
-    }}
+        topics={[topicsUrl+me.username]}
+        onConnect={()=>{
+            console.log("Connected");
+            axios.get(membersUrl+me.id+onlineStatusEnd).then(console.log("you are online now")).catch(function (error)
+            {
+              console.log(error);
+            });}}
         onDisconnect={()=>{console.log("Disconnected");
         }}
         onMessage={(msg)=>{

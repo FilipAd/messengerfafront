@@ -54,8 +54,8 @@ export default function Message(props)
                 <Avatar className={classes.avatar}/>
             </div>
             <div className={classes.message_info}>
-                <div className={classes.message_name}>Bajko</div>
-                    <div className={classes.message_text}>{props.txt.message}</div>
+                <div className={classes.message_name}>{props.msg.name}</div>
+                    <div className={classes.message_text}>{props.msg.message}</div>
                     <div className={classes.message_timestemp}>10:00 PM</div>
                 </div>
         </div>

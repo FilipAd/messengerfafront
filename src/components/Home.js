@@ -1,8 +1,10 @@
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Chat from './Chat';
 import {makeStyles} from "@material-ui/core/styles";
 import { Grid } from '@material-ui/core';
 import Background from "../background.jpg";
+
 
 export default function Home() 
 {
@@ -28,12 +30,12 @@ export default function Home()
     },
     }));
     const classes=useStyle();
+  const userFromStorage=JSON.parse(localStorage.getItem("user"))
+  let [receiver,setReceiver]=useState(null);
   return (<div className={classes.app}>
     <div className={classes.app_body}>
-    <Sidebar/>
-    <Chat/>
-    
-
+    <Sidebar setReceiver={setReceiver}/>
+    <Chat receiver={receiver}/>
     </div>
   
   </div>

@@ -4,7 +4,11 @@ export const serverUrl="http://192.168.1.9:9090";
 
 export const webSocketUrl="/websocket-chat/";
 
-export const topicsUrl="/topic/user";
+//export const topicsUrl="/topic/user";
+
+export const topicsUrl="/topic/messages/";
+
+export const membersEnd="/members/";
 
 export const signUpEnd="/sign-up/";
 
@@ -12,15 +16,19 @@ export const loginEnd="/login/";
 
 export const homeFrontEnd="/home/";
 
+export const onlineStatusEnd="/onlineStatus";
+
 export const emailTokenFrontEnd="/emailtoken/";
 
 export const emailSendTokenEnd="/sendemail/";
 
 export const emailTokenSubmitEnd="/emailtokenverification/"
 
-export const onlineMembersEnd="/onlinemembers/";
+export const onlineMembersEnd="online/";
 
-export const onlineMembersUrl=serverUrl+onlineMembersEnd;
+export const membersUrl=serverUrl+membersEnd;
+
+export const onlineMembersUrl=membersUrl+onlineMembersEnd
 
 export const emailSendTokenUrl=serverUrl+emailSendTokenEnd;
 

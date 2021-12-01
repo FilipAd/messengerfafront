@@ -31,7 +31,7 @@ export default function SidebarChat(props)
     }))
     const classes=useStyle();
     return(
-    <div className={classes.sidebar_chat}>
+    <div className={classes.sidebar_chat} onClick={()=>props.setReceiver(props.username)}>
         <Avatar className={classes.sidebar_avatar}/>
         <div className={classes.sidebar_chat_info}>
             <h3>{props.username}</h3>

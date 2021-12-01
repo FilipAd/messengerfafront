@@ -43,6 +43,8 @@ import EmailTokenInput from "./forms/EmailTokenInput";
   </div>
   
 );
+
+  <Route exect path={`/home/`} element={<Home/>} />
 }*/
 function App() 
 {
@@ -51,7 +53,7 @@ function App()
     <Router>
       <Routes>
       <Route exact path='/' element={<Login/>} />
-      <Route exact path='/signup' element={<Signup/>}/>
+      <Route exact path='/signup' element={<Signup/>}/>    
       <Route exect path={`/home/${emailToken}`} element={<Home/>} />
       <Route exact path='/login' element={<Login/>} />
       <Route exact path='/emailtoken' element={<EmailTokenInput setEmailToken={setEmailToken}/>} />

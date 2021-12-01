@@ -7,12 +7,12 @@ import { Avatar, IconButton } from '@material-ui/core';
 import ComputerIcon from "@material-ui/icons/Computer";
 import localIpUrl from 'local-ip-url';
 import localIpV4Address from 'local-ipv4-address';
-import {onlineMembersEnd, onlineMembersUrl} from "../URLs"
+import {membersEnd,onlineMembersUrl} from "../URLs"
 import axios from 'axios';
 
 
 
-export default function Sidebar()
+export default function Sidebar(props)
 {
     let localIpV4Address=require("local-ipv4-address");
     const useStyle = makeStyles((theme) =>({
@@ -104,6 +104,7 @@ export default function Sidebar()
         }
     }))
     const classes=useStyle();
+    const me=JSON.parse(localStorage.getItem("user")).username;
     let [onlineMembers,setOnlineMembers]=useState([]);
     React.useEffect(()=>{axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log(res.data)}).catch(function (error){console.log(error)});},[]);
     return(<div className={classes.sidebar}> 
@@ -114,7 +115,7 @@ export default function Sidebar()
                 </div> 
                 <div className={classes.side_name_all}>
                     <ComputerIcon className={classes.side_header_avatar}/>
-                    <div className={classes.name}>Aleksandar Atanasijevic</div>
+                    <div className={classes.name}>{me}</div>
                 
                 </div>
                 <div className={classes.sidebar_exit}>
@@ -126,7 +127,7 @@ export default function Sidebar()
             </div>
             <div className={classes.sidebar_chats}>
             {
-                onlineMembers.map(member=><SidebarChat username={member.username}/>)
+                onlineMembers.map(member=><SidebarChat username={member.username} setReceiver={props.setReceiver}/>)
             }
             </div>
 
