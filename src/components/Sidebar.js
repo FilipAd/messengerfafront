@@ -105,8 +105,8 @@ export default function Sidebar(props)
     }))
     const classes=useStyle();
     const me=JSON.parse(localStorage.getItem("user")).username;
-    let [onlineMembers,setOnlineMembers]=useState([]);
-    React.useEffect(()=>{axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log(res.data)}).catch(function (error){console.log(error)});},[]);
+ 
+   
     return(<div className={classes.sidebar}> 
             <div className={classes.sidebar_header}>
                 <div className={classes.sidebar_search_input}>
@@ -119,7 +119,7 @@ export default function Sidebar(props)
                 
                 </div>
                 <div className={classes.sidebar_exit}>
-                    <IconButton>
+                    <IconButton onMouseDown={()=>props.logout()}>
                     <ExitToApp/>
                     </IconButton>
                 </div>
@@ -127,7 +127,7 @@ export default function Sidebar(props)
             </div>
             <div className={classes.sidebar_chats}>
             {
-                onlineMembers.map(member=><SidebarChat username={member.username} setReceiver={props.setReceiver}/>)
+                props.onlineMembers.map(member=><SidebarChat username={member.username} setReceiver={props.setReceiver}/>)
             }
             </div>
 

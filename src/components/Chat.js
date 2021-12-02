@@ -154,10 +154,14 @@ export default function Chat(props)
             });}}
         onDisconnect={()=>{console.log("Disconnected");
         }}
+
         onMessage={(msg)=>{
             setMessages([...messages,msg]);
             console.log(msg);
         }}
+
+      
+
         ref={(client)=>{
             setClientRef(client);
         }}>

@@ -18,6 +18,8 @@ export const homeFrontEnd="/home/";
 
 export const onlineStatusEnd="/onlineStatus";
 
+export const offlineStatusEnd="/offlineStatus";
+
 export const emailTokenFrontEnd="/emailtoken/";
 
 export const emailSendTokenEnd="/sendemail/";
@@ -26,7 +28,11 @@ export const emailTokenSubmitEnd="/emailtokenverification/"
 
 export const onlineMembersEnd="online/";
 
+export const sendNoticeOnlineStatusEnd="/sendmessage";
+
 export const membersUrl=serverUrl+membersEnd;
+
+export const sendNoticeOnlineStatusUrl=serverUrl+sendNoticeOnlineStatusEnd;
 
 export const onlineMembersUrl=membersUrl+onlineMembersEnd
 
