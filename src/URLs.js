@@ -30,6 +30,10 @@ export const onlineMembersEnd="online/";
 
 export const sendNoticeOnlineStatusEnd="/sendmessage";
 
+export const messagesEnd="/messages/";
+
+export const messageUrl=serverUrl+messagesEnd;
+
 export const membersUrl=serverUrl+membersEnd;
 
 export const sendNoticeOnlineStatusUrl=serverUrl+sendNoticeOnlineStatusEnd;

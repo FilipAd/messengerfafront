@@ -127,7 +127,7 @@ export default function Sidebar(props)
             </div>
             <div className={classes.sidebar_chats}>
             {
-                props.onlineMembers.map(member=><SidebarChat username={member.username} setReceiver={props.setReceiver}/>)
+                props.onlineMembers.map(member=><SidebarChat onlineMember={member} setReceiver={props.setReceiver} loadMessagesForChat={props.loadMessagesForChat}/>)
             }
             </div>
 

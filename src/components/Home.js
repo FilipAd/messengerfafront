@@ -4,7 +4,7 @@ import Chat from './Chat';
 import {makeStyles} from "@material-ui/core/styles";
 import { Grid } from '@material-ui/core';
 import Background from "../background.jpg";
-import { loginEnd, membersUrl, offlineStatusEnd, onlineMembersUrl, onlineStatusEnd, sendNoticeOnlineStatusUrl, serverWebSocketUrl } from '../URLs';
+import { loginEnd, membersUrl, messageUrl, offlineStatusEnd, onlineMembersUrl, onlineStatusEnd, sendNoticeOnlineStatusUrl, serverWebSocketUrl } from '../URLs';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import SockJsClient from "react-stomp";
@@ -35,14 +35,15 @@ export default function Home()
     }));
     const classes=useStyle();
   const me=JSON.parse(localStorage.getItem("user"))
-  let [receiver,setReceiver]=useState(null);
+  let [receiver,setReceiver]=useState({});
   let [redirectToLogin,setRedirectToLogin]=useState(false);
   let [onlineMembers,setOnlineMembers]=useState([]);
   const[clientRef2,setClientRef2]=useState(null);
-  let notice={name:me.username,message:me.usernmae}
+  let notice={name:me.username,message:me.username}
+  let [messages,setMessages]=useState([]);
 
-  React.useEffect(()=>{axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log("punimo bazu online")}).catch(function (error){console.log(error)});},[]);
-
+  React.useEffect(()=>{axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log(res.data)}).catch(function (error){console.log(error)});},[]);
+  React.useEffect(()=>{axios.get(messageUrl+me.id+"/"+((receiver.id===undefined)?"0":receiver.id)).then(res=>{setMessages(res.data)}).catch(function (error){console.log(error)});},[]);
   function logout()
   { 
     axios.get(membersUrl+me.id+offlineStatusEnd).then(console.log("you are online now")).catch(function (error) //podesi svoj status na offline
@@ -63,15 +64,19 @@ export default function Home()
     axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log("punimo bazu online iz metode")}).catch(function (error){console.log(error)});
   }
 
+  function loadMessagesForChat(receiverDirect)
+  {
+    axios.get(messageUrl+me.id+"/"+receiverDirect.id).then(res=>{setMessages(res.data)}).catch(function (error){console.log(error)});
+  }
+
   if(redirectToLogin)
   {
     return <Navigate to={loginEnd}/>
   }
   return (<div className={classes.app}>
     <div className={classes.app_body}>
-    <Sidebar setReceiver={setReceiver} logout={logout} onlineMembers={onlineMembers}/>
-    <Chat receiver={receiver}/>
-
+    <Sidebar setReceiver={setReceiver} logout={logout} onlineMembers={onlineMembers} loadMessagesForChat={loadMessagesForChat}/>
+    <Chat receiver={receiver} messages={messages} setMessages={setMessages}/>
     <SockJsClient url={serverWebSocketUrl}
         topics={["/topic/user"]}
         onConnect={()=>{

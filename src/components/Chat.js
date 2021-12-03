@@ -7,7 +7,7 @@ import ExitToApp from "@material-ui/icons/ExitToApp";
 import { PermPhoneMsg, StarTwoTone } from '@material-ui/icons';
 import SockJsClient from "react-stomp";
 import client from 'react-stomp';
-import { serverWebSocketUrl,topicsUrl } from '../URLs';
+import { messageUrl, serverWebSocketUrl,topicsUrl } from '../URLs';
 import ChatInput from '../forms/ChatInput';
 import axios from "axios";
 import {membersUrl,onlineStatusEnd} from "../URLs";
@@ -93,10 +93,8 @@ export default function Chat(props)
     const me=JSON.parse(localStorage.getItem("user"));
     const classes=useStyle();
     let [messageText,setMessageText]=useState("");
-    let [messages,setMessages]=useState([]);
     const[clientRef,setClientRef]=useState(null);
-  
-
+    
   /*  function sendMessage(messagetxt,from)
     {
         if(messagetxt!=="")
@@ -114,9 +112,12 @@ export default function Chat(props)
     {
         if(messagetxt!=="")
         {
-        let msg={name:me.username,message:messagetxt};
-        setMessages([...messages,msg]);
-        clientRef.sendMessage('/app/websocket-chat/'+props.receiver,JSON.stringify({message: messagetxt,name:me.username}));
+       // let msg={name:me.username,message:messagetxt};  vrati ovo
+       let msg={memberSenderUsername:me.username,text:messagetxt}; //ovo je dodano ako ne radi vrati iznad
+        props.setMessages([...props.messages,msg]);
+      //  clientRef.sendMessage('/app/websocket-chat/'+props.receiver,JSON.stringify({message: messagetxt,name:me.username})); vrati ovo 
+      clientRef.sendMessage('/app/websocket-chat/'+props.receiver.username,
+      JSON.stringify({idMemberSender:me.id,idMemberReceiver:props.receiver.id,memberSenderUsername:me.username,memberReceiverUsername:props.receiver.username,text:messagetxt})); //vratio ovo
         setMessageText("");
         }
     }
@@ -126,18 +127,21 @@ export default function Chat(props)
         setMessageText(e.target.value);
     }
 
+
+
+
     return (
         <div className={classes.chat}>
             <div className={classes.chat_header}>
             <Avatar className={classes.chat_header_avatar}/>
             <div className={classes.chat_header_name}>
-                <h2>{props.receiver}</h2>
+                <h2>{props.receiver.username}</h2>
             </div>
            
             </div>
             <div className={classes.chat_body}>
             {
-            messages.map(msg=> <Message msg={msg}/>)
+            props.messages.map(msg=> <Message msg={msg}/>)
             }
             </div>
             <div className={classes.chat_footer}> 
@@ -156,7 +160,9 @@ export default function Chat(props)
         }}
 
         onMessage={(msg)=>{
-            setMessages([...messages,msg]);
+        //    if(props.receiver===(msg.name))  vrati ovo
+            if(props.receiver.username===(msg.memberSenderUsername))  
+            props.setMessages([...props.messages,msg]);
             console.log(msg);
         }}
 

@@ -30,11 +30,17 @@ export default function SidebarChat(props)
         }
     }))
     const classes=useStyle();
+
+    function handleClick()
+    {
+        props.setReceiver(props.onlineMember);
+        props.loadMessagesForChat(props.onlineMember);
+    }
     return(
-    <div className={classes.sidebar_chat} onClick={()=>props.setReceiver(props.username)}>
+    <div className={classes.sidebar_chat} onClick={()=>handleClick()}>
         <Avatar className={classes.sidebar_avatar}/>
         <div className={classes.sidebar_chat_info}>
-            <h3>{props.username}</h3>
+            <h3>{props.onlineMember.username}</h3>
         </div>
     </div>
     );
