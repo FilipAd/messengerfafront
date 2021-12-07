@@ -9,6 +9,7 @@ import { Grid } from '@material-ui/core';
 import { BrowserRouter as Router,Route,Routes} from "react-router-dom";
 import Signup from "./forms/Signup";
 import EmailTokenInput from "./forms/EmailTokenInput";
+import CertificateUploadForm from "./forms/CertificateUploadForm";
 
 
 /*function App() 
@@ -56,6 +57,7 @@ function App()
       <Route exact path='/signup' element={<Signup/>}/>    
       <Route exect path={`/home/${emailToken}`} element={<Home/>} />
       <Route exact path='/login' element={<Login/>} />
+      <Route exact path='/certificate' element={<CertificateUploadForm/>} />
       <Route exact path='/emailtoken' element={<EmailTokenInput setEmailToken={setEmailToken}/>} />
     </Routes>
     </Router>

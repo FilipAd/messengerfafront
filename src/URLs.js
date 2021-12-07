@@ -1,5 +1,7 @@
 //export const serverUrl="http://filipad.ddns.net:9090";
 
+//export const serverUrl="http://192.168.1.9:8080/messengerfa";
+
 export const serverUrl="http://192.168.1.9:9090";
 
 export const webSocketUrl="/websocket-chat/";
@@ -15,6 +17,8 @@ export const signUpEnd="/sign-up/";
 export const loginEnd="/login/";
 
 export const homeFrontEnd="/home/";
+
+export const certificateuploadEnd="/certificate/upload"
 
 export const onlineStatusEnd="/onlineStatus";
 
@@ -33,6 +37,8 @@ export const sendNoticeOnlineStatusEnd="/sendmessage";
 export const messagesEnd="/messages/";
 
 export const messageUrl=serverUrl+messagesEnd;
+
+export const certificateUploadUrl=serverUrl+certificateuploadEnd;
 
 export const membersUrl=serverUrl+membersEnd;
 

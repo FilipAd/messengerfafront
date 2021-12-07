@@ -39,7 +39,7 @@ export default function Home()
   let [redirectToLogin,setRedirectToLogin]=useState(false);
   let [onlineMembers,setOnlineMembers]=useState([]);
   const[clientRef2,setClientRef2]=useState(null);
-  let notice={name:me.username,message:me.username}
+  let notice={name:"bye",message:"bye"}
   let [messages,setMessages]=useState([]);
 
   React.useEffect(()=>{axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log(res.data)}).catch(function (error){console.log(error)});},[]);

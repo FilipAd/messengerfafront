@@ -183,6 +183,14 @@ export default function Signup(props) {
             type="username"
             value={userName}
             onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={(e)=>{ if(e.key==="Enter")
+            {
+              e.preventDefault();
+              if(validateForm())
+              createUser();
+              else
+              alert("Error: all fields are required");
+            }}}  
           />
         </FormGroup>
         <FormGroup size="large" controlid="email">
@@ -192,6 +200,14 @@ export default function Signup(props) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e)=>{ if(e.key==="Enter")
+            {
+              e.preventDefault();
+              if(validateForm())
+              createUser();
+              else
+              alert("Error: all fields are required");
+            }}}  
           />
         </FormGroup>
         <FormGroup size="large" controlid="password">
@@ -201,6 +217,14 @@ export default function Signup(props) {
             type="password"
             value={passw}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e)=>{ if(e.key==="Enter")
+            {
+              e.preventDefault();
+              if(validateForm())
+              createUser();
+              else
+              alert("Error: all fields are required");
+            }}}  
           />
         </FormGroup> 
         <FormGroup size="large" controlid="confirmPassword">
@@ -210,6 +234,14 @@ export default function Signup(props) {
             type="password"
             value={repassw}
             onChange={(e) => setRePassword(e.target.value)}
+            onKeyDown={(e)=>{ if(e.key==="Enter")
+            {
+              e.preventDefault();
+              if(validateForm())
+              createUser();
+              else
+              alert("Error: all fields are required");
+            }}}  
           />
         </FormGroup>
         <Link to={"/"} className={classes.link}>Already have an account? Sign in</Link>

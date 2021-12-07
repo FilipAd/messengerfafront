@@ -138,6 +138,11 @@ export default function EmailTokenInput(props) {
             autoFocus
             value={emailToken}
             onChange={(e) => setEmailToken(e.target.value)}
+            onKeyDown={(e)=>{ if(e.key==="Enter")
+            {
+              e.preventDefault();
+              handleSubmit();
+            }}}
           />
         </FormGroup>
       </Form>

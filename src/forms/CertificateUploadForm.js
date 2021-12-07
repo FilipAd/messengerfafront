@@ -6,11 +6,11 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd} from "../URLs";
+import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd, certificateUploadUrl} from "../URLs";
 
 
 
-export default function Login(props) {
+export default function CertificateUploadForm(props) {
 
   const useStyle = makeStyles((theme) =>({
 
@@ -76,12 +76,15 @@ export default function Login(props) {
     },
     createInput : {
       margine:"10 10 10 10",
+      height:"150px",
       width: "400px",
       fontSize: "22px",
       padding: "10px",
       boxSizing: "borderBox",
       borderRadius: "3px",
-      border: "none",
+      borderStyle:"dotted",
+      border: "solid",
+      borderColor:"white",
       outlineColor: "blue",
       boxShadow: "0 2px 4px grey",
       alignSelf: "center",
@@ -90,95 +93,71 @@ export default function Login(props) {
  }))
 
 
-  const [userName, setUsername] = useState("");
-  const [passw, setPassword] = useState("");
-  const [authenticationPassed,setAuthenticationPassed]=useState(false);
-
-  function validateForm() {
-    return userName.length > 0 && passw.length > 0;
-  }
-
-  function storeUser(user)
-  {
-    localStorage.setItem("user",JSON.stringify(user));
-  }
-
-  function sendEmailToken(id)
-  {
-    axios.get(emailSendTokenUrl+id).then(console.log("mejl poslat")).catch(function (error) {console.log("error:"+error)});
-  }
 
   function handleSubmit() 
   {
-    let credentials={username:userName,password:passw};
-    axios.post(loginUrl,credentials).then(res=>{console.log(res.data);storeUser(res.data);setAuthenticationPassed(true);sendEmailToken(res.data.id)}).catch(function (error)
-    {
-      if(error.response.status===401)
-      {
-        alert("The user name or password is incorrect");
-      }
-      else
-      {
-        alert("The error occurred due to server problem.");
-      }
-    });
+   
   }
 
  
    const classes=useStyle();
+   let [selectedFile,setSelectedFile]=useState(null);
+   let [uploadEnabled,setUploadEnabled]=useState(true);
+   let [redirectToEmail,setRedirectToEmail]=useState(false);
 
-  if(authenticationPassed)
-  {
-    return <Navigate to={emailTokenFrontEnd}/>
-  }
+   function onFileChangeHandler(e){
+
+    if(e.target.files[0])
+    {
+     if(e.target.files[0].size<1048576)
+     {  
+       e.preventDefault();
+       setSelectedFile(e.target.files[0]);
+       setUploadEnabled(false);
+     }
+     else
+     {
+     alert("prevelik fajl");
+     setSelectedFile(null);
+     setUploadEnabled(true);
+     }
+    }
+  
+    };
+
+    function uploadFile()
+    {
+    const formData = new FormData();
+    formData.append('file',selectedFile);
+      axios.post(certificateUploadUrl,formData).then(res=>(res.data)?setRedirectToEmail(true):alert("Your certificate is not correct")).catch(function (error) { alert("error")});
+    }
+
+
+
 
   return (
    
     <div className={classes.root}>
-      
-      <Form>
+       <Form>
           <div className={classes.title}>
-      <h1 className={classes.label}>Login :</h1>
+      <h1 className={classes.label}>Upload your certificate :</h1>
             </div>
-        <FormGroup size="large" controlid="username">
-          <FormLabel className={classes.label}>Username :</FormLabel>
+        <FormGroup size="large" controlid="file">
+          <FormLabel className={classes.label}>File :</FormLabel>
           <Form.Control
             className={classes.createInput}
             autoFocus
-            type="username"
-            value={userName}
-            onChange={(e) => setUsername(e.target.value)}
+            type="file"
+            onChange={onFileChangeHandler}
             onKeyDown={(e)=>{ if(e.key==="Enter")
             {
-              e.preventDefault();
-              if(validateForm())
-              handleSubmit();
-              else
-              alert("Error: all fields are required");
+            
             }}}
           />
         </FormGroup>
-        <FormGroup size="large" controlid="password">
-          <FormLabel className={classes.label}>Password :</FormLabel>
-          <Form.Control
-            className={classes.createInput}
-            type="password"
-            value={passw}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e)=>{ if(e.key==="Enter")
-            {
-              e.preventDefault();
-              if(validateForm())
-              handleSubmit();
-              else
-              alert("Error: all fields are required");
-            }}}  
-          />
-        </FormGroup>
-      <Link to={"/signup"} className={classes.link}>Create account</Link>
-      </Form>
-        <Button block size="large" type="submit" disabled={!validateForm()} className={classes.button} onMouseDown={()=>handleSubmit()}>
-          Login
+        </Form>
+        <Button block size="large" disabled={uploadEnabled} className={classes.button} onMouseDown={()=>uploadFile()}>
+          Upload
       </Button>
      </div>
   );
