@@ -20,6 +20,8 @@ export const homeFrontEnd="/home/";
 
 export const certificateuploadEnd="/certificate/upload"
 
+export const certificateFrontEnd="/certificate";
+
 export const onlineStatusEnd="/onlineStatus";
 
 export const offlineStatusEnd="/offlineStatus";

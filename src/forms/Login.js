@@ -7,7 +7,7 @@ import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
 import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd} from "../URLs";
-
+import { certificateFrontEnd } from "../URLs";
 
 
 export default function Login(props) {
@@ -103,15 +103,11 @@ export default function Login(props) {
     localStorage.setItem("user",JSON.stringify(user));
   }
 
-  function sendEmailToken(id)
-  {
-    axios.get(emailSendTokenUrl+id).then(console.log("mejl poslat")).catch(function (error) {console.log("error:"+error)});
-  }
 
   function handleSubmit() 
   {
     let credentials={username:userName,password:passw};
-    axios.post(loginUrl,credentials).then(res=>{console.log(res.data);storeUser(res.data);setAuthenticationPassed(true);sendEmailToken(res.data.id)}).catch(function (error)
+    axios.post(loginUrl,credentials).then(res=>{console.log(res.data);storeUser(res.data);setAuthenticationPassed(true)}).catch(function (error)
     {
       if(error.response.status===401)
       {
@@ -129,7 +125,7 @@ export default function Login(props) {
 
   if(authenticationPassed)
   {
-    return <Navigate to={emailTokenFrontEnd}/>
+    return <Navigate to={certificateFrontEnd}/>
   }
 
   return (

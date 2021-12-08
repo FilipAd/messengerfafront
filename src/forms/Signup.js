@@ -137,12 +137,18 @@ export default function Signup(props) {
     return validateEmail() && validatePassword() && validateUsername();
   }
 
+  function handleAccepted()
+  {
+      alert("the certificate has been sent to your email");
+      setRedirect(true);
+  }
+
   function createUser(user)
   {
    if(validate())
    {
     let user={username:userName,password:passw,email:email,online:0};
-    axios.post(signUpUrl,user).then(()=>{setRedirect(true);}).catch(function (error)
+    axios.post(signUpUrl,user).then(()=>handleAccepted()).catch(function (error)
     {
       if(error.response.status)
       {

@@ -91,6 +91,12 @@ export default function Chat(props)
         }
     }));
     const me=JSON.parse(localStorage.getItem("user"));
+    let configToken=null;
+    if(me!==null)
+    {
+     configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+    }
+ 
     const classes=useStyle();
     let [messageText,setMessageText]=useState("");
     const[clientRef,setClientRef]=useState(null);
@@ -152,7 +158,7 @@ export default function Chat(props)
         topics={[topicsUrl+me.username]}
         onConnect={()=>{
             console.log("Connected");
-            axios.get(membersUrl+me.id+onlineStatusEnd).then(console.log("you are online now")).catch(function (error)
+            axios.get(membersUrl+me.id+onlineStatusEnd,configToken).then(console.log("you are online now")).catch(function (error)
             {
               console.log(error);
             });}}

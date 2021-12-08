@@ -6,7 +6,7 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd, certificateUploadUrl} from "../URLs";
+import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd, certificateUploadUrl, loginEnd} from "../URLs";
 
 
 
@@ -104,6 +104,13 @@ export default function CertificateUploadForm(props) {
    let [selectedFile,setSelectedFile]=useState(null);
    let [uploadEnabled,setUploadEnabled]=useState(true);
    let [redirectToEmail,setRedirectToEmail]=useState(false);
+   let [redirectToLogin,setRedirectToLogin]=useState(false);
+   const me=JSON.parse(localStorage.getItem("user"))
+   let configToken=null;
+   if(me!==null)
+   {
+    configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+   }
 
    function onFileChangeHandler(e){
 
@@ -122,19 +129,47 @@ export default function CertificateUploadForm(props) {
      setUploadEnabled(true);
      }
     }
-  
+    
     };
+    function sendEmailToken(id)
+    {
+   //   axios.get(emailSendTokenUrl+id).then(console.log("mejl poslat")).catch(function (error) {console.log("error:"+error)});
+   //   sendEmailToken(res.data.id)
+    }
+  
+
+    function handleCertificateIsValid()
+    {
+    //  sendEmailToken(res.data.id)
+    //  setRedirectToEmail(true);
+    }
 
     function uploadFile()
     {
     const formData = new FormData();
     formData.append('file',selectedFile);
-      axios.post(certificateUploadUrl,formData).then(res=>(res.data)?setRedirectToEmail(true):alert("Your certificate is not correct")).catch(function (error) { alert("error")});
+      axios.post(certificateUploadUrl,formData,configToken).then(res=>(res.data)?setRedirectToEmail(true):alert("Your certificate is not valid or is not yours")).catch(function (error)
+       { 
+        if(error.response.status===403)
+        {
+          alert("You are not logged in. Please log in and try again");
+          setRedirectToLogin(true);
+        }
+        else
+        {
+          alert("The error occurred due to server problem.");
+        }
+        });
     }
 
-
-
-
+  if(redirectToLogin)
+  {
+    return <Navigate to={loginEnd}/>
+  }
+  if(redirectToEmail)
+  {
+    return <Navigate to={emailTokenFrontEnd}/>
+  }
   return (
    
     <div className={classes.root}>

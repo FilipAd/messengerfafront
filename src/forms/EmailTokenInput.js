@@ -92,6 +92,13 @@ export default function EmailTokenInput(props) {
   const [emailTokenFromDB,setEmailTokenFromDB]=useState("");
   const [redirectToHome,setRedirectToHome]=useState(false);
   let userFromStorage=JSON.parse(localStorage.getItem("user"));
+  let configToken=null;
+  if(userFromStorage!==null)
+  {
+   configToken={ headers: {Authorization:"Bearer "+userFromStorage.token,UserName:userFromStorage.username}};
+  }
+
+  
 
   function validateForm() {
     return emailToken.length > 0;
@@ -100,7 +107,7 @@ export default function EmailTokenInput(props) {
   { 
     sessionStorage.setItem("emailTokenStored",eToken)
     props.setEmailToken(eToken);
-    axios.put(membersUrl+userFromStorage.id+onlineStatusEnd,2).then("you are online now").catch(function (error)
+    axios.put(membersUrl+userFromStorage.id+onlineStatusEnd,2,configToken).then("you are online now").catch(function (error)
   {
     console.log(error);
   });
@@ -109,7 +116,7 @@ export default function EmailTokenInput(props) {
   function handleSubmit() 
   {
     let emailTokenSend={emailToken:emailToken};
-    axios.post(emailTokenSubmitUrl+userFromStorage.id,emailTokenSend).then(res=>{console.log(res.data);(res.data)?handleEmailTokenVerificationAccepted(emailToken):alert("Invalid Code.Try Again")}).catch(function (error)
+    axios.post(emailTokenSubmitUrl+userFromStorage.id,emailTokenSend,configToken).then(res=>{console.log(res.data);(res.data)?handleEmailTokenVerificationAccepted(emailToken):alert("Invalid Code.Try Again")}).catch(function (error)
     { 
         alert(error); 
     });

@@ -104,7 +104,13 @@ export default function Sidebar(props)
         }
     }))
     const classes=useStyle();
-    const me=JSON.parse(localStorage.getItem("user")).username;
+    const me=JSON.parse(localStorage.getItem("user"));
+    let configToken=null;
+    if(me!==null)
+    {
+     configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+    }
+ 
  
    
     return(<div className={classes.sidebar}> 
@@ -115,7 +121,7 @@ export default function Sidebar(props)
                 </div> 
                 <div className={classes.side_name_all}>
                     <ComputerIcon className={classes.side_header_avatar}/>
-                    <div className={classes.name}>{me}</div>
+                    <div className={classes.name}>{me.username}</div>
                 
                 </div>
                 <div className={classes.sidebar_exit}>

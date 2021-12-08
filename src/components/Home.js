@@ -35,6 +35,12 @@ export default function Home()
     }));
     const classes=useStyle();
   const me=JSON.parse(localStorage.getItem("user"))
+  let configToken=null;
+  if(me!==null)
+  {
+   configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+  }
+
   let [receiver,setReceiver]=useState({});
   let [redirectToLogin,setRedirectToLogin]=useState(false);
   let [onlineMembers,setOnlineMembers]=useState([]);
@@ -42,15 +48,15 @@ export default function Home()
   let notice={name:"bye",message:"bye"}
   let [messages,setMessages]=useState([]);
 
-  React.useEffect(()=>{axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log(res.data)}).catch(function (error){console.log(error)});},[]);
-  React.useEffect(()=>{axios.get(messageUrl+me.id+"/"+((receiver.id===undefined)?"0":receiver.id)).then(res=>{setMessages(res.data)}).catch(function (error){console.log(error)});},[]);
+  React.useEffect(()=>{axios.get(onlineMembersUrl,configToken).then(res=>{setOnlineMembers(res.data);console.log(res.data)}).catch(function (error){console.log(error)});},[]);
+  React.useEffect(()=>{axios.get(messageUrl+me.id+"/"+((receiver.id===undefined)?"0":receiver.id),configToken).then(res=>{setMessages(res.data)}).catch(function (error){console.log(error)});},[]);
   function logout()
   { 
-    axios.get(membersUrl+me.id+offlineStatusEnd).then(console.log("you are online now")).catch(function (error) //podesi svoj status na offline
+    axios.get(membersUrl+me.id+offlineStatusEnd,configToken).then(console.log("you are online now")).catch(function (error) //podesi svoj status na offline
             {
               console.log(error);
             });
-    axios.post(sendNoticeOnlineStatusUrl,notice).then(console.log("you are offline now")).catch(function (error) //posalji svima obavjest da si offline
+    axios.post(sendNoticeOnlineStatusUrl,notice,configToken).then(console.log("you are offline now")).catch(function (error) //posalji svima obavjest da si offline
     {
       console.log(error);
     });
@@ -61,12 +67,12 @@ export default function Home()
 
   function updateOnline()
   {
-    axios.get(onlineMembersUrl).then(res=>{setOnlineMembers(res.data);console.log("punimo bazu online iz metode")}).catch(function (error){console.log(error)});
+    axios.get(onlineMembersUrl,configToken).then(res=>{setOnlineMembers(res.data);console.log("punimo bazu online iz metode")}).catch(function (error){console.log(error)});
   }
 
   function loadMessagesForChat(receiverDirect)
   {
-    axios.get(messageUrl+me.id+"/"+receiverDirect.id).then(res=>{setMessages(res.data)}).catch(function (error){console.log(error)});
+    axios.get(messageUrl+me.id+"/"+receiverDirect.id,configToken).then(res=>{setMessages(res.data)}).catch(function (error){console.log(error)});
   }
 
   if(redirectToLogin)
@@ -81,23 +87,23 @@ export default function Home()
         topics={["/topic/user"]}
         onConnect={()=>{
             console.log("Socket for online status connected");
-            axios.get(membersUrl+me.id+onlineStatusEnd).then(console.log("you are online now")).catch(function (error)
+            axios.get(membersUrl+me.id+onlineStatusEnd,configToken).then(console.log("you are online now")).catch(function (error)
             {
               console.log(error);
             })
             let notice={name:me.username,message:me.usernmae};
-            axios.post(sendNoticeOnlineStatusUrl,notice).then(console.log("everybody i am online")).catch(function (error) //posalji svima obavjest da si offline
+            axios.post(sendNoticeOnlineStatusUrl,notice,configToken).then(console.log("everybody i am online")).catch(function (error) //posalji svima obavjest da si offline
             {
               console.log(error);
             });
             ;}}
 
         onDisconnect={()=>{console.log("Disconnected");
-        axios.get(membersUrl+me.id+offlineStatusEnd).then(console.log("you are offline now")).catch(function (error)
+        axios.get(membersUrl+me.id+offlineStatusEnd,configToken).then(console.log("you are offline now")).catch(function (error)
         {
           console.log(error);
         });
-        axios.post(sendNoticeOnlineStatusUrl,notice).then(console.log("everybody i am offline")).catch(function (error) //posalji svima obavjest da si offline
+        axios.post(sendNoticeOnlineStatusUrl,notice,configToken).then(console.log("everybody i am offline")).catch(function (error) //posalji svima obavjest da si offline
         {
           console.log(error);
         });
@@ -107,11 +113,11 @@ export default function Home()
           updateOnline();
         }}
         onClose={(e)=>{
-          axios.get(membersUrl+me.id+offlineStatusEnd).then(console.log("you are offline now")).catch(function (error)
+          axios.get(membersUrl+me.id+offlineStatusEnd,configToken).then(console.log("you are offline now")).catch(function (error)
           {
             console.log(error);
           });
-          axios.post(sendNoticeOnlineStatusUrl,notice).then(console.log("everybody i am offline")).catch(function (error) //posalji svima obavjest da si offline
+          axios.post(sendNoticeOnlineStatusUrl,notice,configToken).then(console.log("everybody i am offline")).catch(function (error) //posalji svima obavjest da si offline
           {
             console.log(error);
           });
