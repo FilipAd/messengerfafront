@@ -6,8 +6,9 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd} from "../URLs";
+import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd, simetricKeyS} from "../URLs";
 import { certificateFrontEnd } from "../URLs";
+import cryptoJs from "crypto-js";
 
 
 export default function Login(props) {
@@ -98,26 +99,44 @@ export default function Login(props) {
     return userName.length > 0 && passw.length > 0;
   }
 
-  function storeUser(user)
+  function validateUsername(name)
   {
-    localStorage.setItem("user",JSON.stringify(user));
+    if(name.match(/^[a-zA-Z0-9_]+$/))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
+  function storeUser(user)
+  {
+ 
+    var ciphertext = cryptoJs.AES.encrypt(JSON.stringify(user),simetricKeyS).toString();
+    localStorage.setItem("user",ciphertext);
 
+  }
   function handleSubmit() 
   {
-    let credentials={username:userName,password:passw};
-    axios.post(loginUrl,credentials).then(res=>{console.log(res.data);storeUser(res.data);setAuthenticationPassed(true)}).catch(function (error)
+    if(validateUsername(userName))
     {
-      if(error.response.status===401)
-      {
-        alert("The user name or password is incorrect");
-      }
-      else
-      {
-        alert("The error occurred due to server problem.");
-      }
-    });
+      let credentials={username:userName,password:passw};
+      axios.post(loginUrl,credentials).then(res=>{storeUser(res.data);setAuthenticationPassed(true)}).catch(function (error)
+        {
+          if(error.response.status===401)
+            {
+              alert("The user name or password is incorrect");
+            }
+          else
+            {
+              alert("The error occurred due to server problem.");
+            }
+        });
+    }
+    else
+    alert("Only alphanumeric characters and underscore allowed in USERNAME.");
   }
 
  

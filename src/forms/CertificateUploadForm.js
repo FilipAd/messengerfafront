@@ -6,7 +6,8 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd, certificateUploadUrl, loginEnd} from "../URLs";
+import { loginUrl,emailSendTokenUrl,emailTokenFrontEnd, certificateUploadUrl, loginEnd, simetricKeyS} from "../URLs";
+import cryptoJs from "crypto-js";
 
 
 
@@ -105,12 +106,18 @@ export default function CertificateUploadForm(props) {
    let [uploadEnabled,setUploadEnabled]=useState(true);
    let [redirectToEmail,setRedirectToEmail]=useState(false);
    let [redirectToLogin,setRedirectToLogin]=useState(false);
-   const me=JSON.parse(localStorage.getItem("user"))
+   let me=null;
    let configToken=null;
-   if(me!==null)
-   {
-    configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
-   }
+ if(localStorage.getItem("user")!==null)
+ {
+   console.log("izvrsava se u home ovo za kripto")
+   var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
+   me = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
+ if(me!==null)
+ {
+  configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+ }
+ }
 
    function onFileChangeHandler(e){
 
@@ -157,7 +164,7 @@ export default function CertificateUploadForm(props) {
         }
         else
         {
-          alert("The error occurred due to server problem.");
+          alert("The error occurred due to server problem or your file is too large");
         }
         });
     }

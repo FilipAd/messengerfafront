@@ -6,7 +6,8 @@ import {Button,FormLabel,FormGroup} from "@material-ui/core"
 import axios from "axios";
 import {Link,Navigate} from "react-router-dom";
 import Background from "../background.jpg";
-import { loginUrl,homeFrontEnd,emailTokenSubmitUrl,onlineStatusEnd, membersUrl} from "../URLs";
+import { loginUrl,homeFrontEnd,emailTokenSubmitUrl,onlineStatusEnd, membersUrl, simetricKeyS} from "../URLs";
+import cryptoJs from "crypto-js";
 
 
 
@@ -91,13 +92,19 @@ export default function EmailTokenInput(props) {
   const [emailToken, setEmailToken] = useState("");
   const [emailTokenFromDB,setEmailTokenFromDB]=useState("");
   const [redirectToHome,setRedirectToHome]=useState(false);
-  let userFromStorage=JSON.parse(localStorage.getItem("user"));
-  let configToken=null;
-  if(userFromStorage!==null)
-  {
-   configToken={ headers: {Authorization:"Bearer "+userFromStorage.token,UserName:userFromStorage.username}};
-  }
 
+
+  let userFromStorage=null;
+  let configToken=null;
+if(localStorage.getItem("user")!==null)
+{
+  var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
+  userFromStorage= JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
+if(userFromStorage!==null)
+{
+ configToken={ headers: {Authorization:"Bearer "+userFromStorage.token,UserName:userFromStorage.username}};
+}
+}
   
 
   function validateForm() {
@@ -113,14 +120,33 @@ export default function EmailTokenInput(props) {
   });
     setRedirectToHome(true)
   }
+
+  function validateEmailToken(emailTokenArg)
+  {
+    if(emailTokenArg.match(/^[a-zA-Z0-9_]+$/))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   function handleSubmit() 
   {
+    if(validateEmailToken(emailToken))
+    {
     let emailTokenSend={emailToken:emailToken};
     axios.post(emailTokenSubmitUrl+userFromStorage.id,emailTokenSend,configToken).then(res=>{console.log(res.data);(res.data)?handleEmailTokenVerificationAccepted(emailToken):alert("Invalid Code.Try Again")}).catch(function (error)
     { 
         alert(error); 
     });
+    }
+    else
+    alert("Only alphanumeric characters and underscore allowed in TOKEN.");
   }
+ 
 
  
    const classes=useStyle();

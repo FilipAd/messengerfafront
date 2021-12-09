@@ -7,8 +7,9 @@ import { Avatar, IconButton } from '@material-ui/core';
 import ComputerIcon from "@material-ui/icons/Computer";
 import localIpUrl from 'local-ip-url';
 import localIpV4Address from 'local-ipv4-address';
-import {membersEnd,onlineMembersUrl} from "../URLs"
+import {membersEnd,onlineMembersUrl, simetricKeyS} from "../URLs"
 import axios from 'axios';
+import cryptoJs from 'crypto-js';
 
 
 
@@ -104,12 +105,17 @@ export default function Sidebar(props)
         }
     }))
     const classes=useStyle();
-    const me=JSON.parse(localStorage.getItem("user"));
+    let me=null;
     let configToken=null;
-    if(me!==null)
-    {
-     configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
-    }
+  if(localStorage.getItem("user")!==null)
+  {
+    var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
+    me = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
+  if(me!==null)
+  {
+   configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+  }
+  }
  
  
    

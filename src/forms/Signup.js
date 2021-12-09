@@ -139,7 +139,7 @@ export default function Signup(props) {
 
   function handleAccepted()
   {
-      alert("the certificate has been sent to your email");
+      alert("The certificate has been sent to your email");
       setRedirect(true);
   }
 

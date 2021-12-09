@@ -10,6 +10,7 @@ import { BrowserRouter as Router,Route,Routes} from "react-router-dom";
 import Signup from "./forms/Signup";
 import EmailTokenInput from "./forms/EmailTokenInput";
 import CertificateUploadForm from "./forms/CertificateUploadForm";
+import NotFoundPage from "./components/NotFoundPage";
 
 
 /*function App() 
@@ -59,6 +60,7 @@ function App()
       <Route exact path='/login' element={<Login/>} />
       <Route exact path='/certificate' element={<CertificateUploadForm/>} />
       <Route exact path='/emailtoken' element={<EmailTokenInput setEmailToken={setEmailToken}/>} />
+      <Route path="*" element={<NotFoundPage/>}/>
     </Routes>
     </Router>
   

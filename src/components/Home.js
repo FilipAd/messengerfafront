@@ -4,10 +4,11 @@ import Chat from './Chat';
 import {makeStyles} from "@material-ui/core/styles";
 import { Grid } from '@material-ui/core';
 import Background from "../background.jpg";
-import { loginEnd, membersUrl, messageUrl, offlineStatusEnd, onlineMembersUrl, onlineStatusEnd, sendNoticeOnlineStatusUrl, serverWebSocketUrl } from '../URLs';
+import { loginEnd, membersUrl, messageUrl, offlineStatusEnd, onlineMembersUrl, onlineStatusEnd, sendNoticeOnlineStatusUrl, serverWebSocketUrl, simetricKeyS } from '../URLs';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import SockJsClient from "react-stomp";
+import cryptoJs from 'crypto-js';
 
 
 export default function Home() 
@@ -34,11 +35,16 @@ export default function Home()
     },
     }));
     const classes=useStyle();
-  const me=JSON.parse(localStorage.getItem("user"))
-  let configToken=null;
+    let me=null;
+    let configToken=null;
+  if(localStorage.getItem("user")!==null)
+  {
+    var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
+    me = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
   if(me!==null)
   {
    configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+  }
   }
 
   let [receiver,setReceiver]=useState({});
@@ -82,7 +88,7 @@ export default function Home()
   return (<div className={classes.app}>
     <div className={classes.app_body}>
     <Sidebar setReceiver={setReceiver} logout={logout} onlineMembers={onlineMembers} loadMessagesForChat={loadMessagesForChat}/>
-    <Chat receiver={receiver} messages={messages} setMessages={setMessages}/>
+    <Chat receiver={receiver} messages={messages} setMessages={setMessages} logout={logout}/>
     <SockJsClient url={serverWebSocketUrl}
         topics={["/topic/user"]}
         onConnect={()=>{

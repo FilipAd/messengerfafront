@@ -8,6 +8,8 @@ export const webSocketUrl="/websocket-chat/";
 
 //export const topicsUrl="/topic/user";
 
+export const simetricKeyS="BarBarOsa979TT";
+
 export const topicsUrl="/topic/messages/";
 
 export const membersEnd="/members/";

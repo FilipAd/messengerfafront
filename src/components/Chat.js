@@ -7,10 +7,11 @@ import ExitToApp from "@material-ui/icons/ExitToApp";
 import { PermPhoneMsg, StarTwoTone } from '@material-ui/icons';
 import SockJsClient from "react-stomp";
 import client from 'react-stomp';
-import { messageUrl, serverWebSocketUrl,topicsUrl } from '../URLs';
+import { messageUrl, serverWebSocketUrl,simetricKeyS,topicsUrl } from '../URLs';
 import ChatInput from '../forms/ChatInput';
 import axios from "axios";
 import {membersUrl,onlineStatusEnd} from "../URLs";
+import cryptoJs from 'crypto-js';
 
 export default function Chat(props)
 {
@@ -90,12 +91,17 @@ export default function Chat(props)
            alignSelf:"right",
         }
     }));
-    const me=JSON.parse(localStorage.getItem("user"));
+    let me=null;
     let configToken=null;
-    if(me!==null)
-    {
-     configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
-    }
+  if(localStorage.getItem("user")!==null)
+  {
+    var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
+    me = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
+  if(me!==null)
+  {
+   configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+  }
+  }
  
     const classes=useStyle();
     let [messageText,setMessageText]=useState("");
@@ -167,10 +173,15 @@ export default function Chat(props)
 
         onMessage={(msg)=>{
         //    if(props.receiver===(msg.name))  vrati ovo
+
+            if(msg.text==="<exit></exit>")
+            props.logout();
             if(props.receiver.username===(msg.memberSenderUsername))  
             props.setMessages([...props.messages,msg]);
             console.log(msg);
         }}
+
+        onError={()=>{alert("Disconnected");}}
 
       
 
