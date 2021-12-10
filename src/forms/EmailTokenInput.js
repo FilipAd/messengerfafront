@@ -92,18 +92,28 @@ export default function EmailTokenInput(props) {
   const [emailToken, setEmailToken] = useState("");
   const [emailTokenFromDB,setEmailTokenFromDB]=useState("");
   const [redirectToHome,setRedirectToHome]=useState(false);
+  const [emailTokenAccepted,setEmailTokenAccepted]=useState("");
 
 
   let userFromStorage=null;
   let configToken=null;
 if(localStorage.getItem("user")!==null)
 {
+  try
+  {
   var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
-  userFromStorage= JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
-if(userFromStorage!==null)
-{
- configToken={ headers: {Authorization:"Bearer "+userFromStorage.token,UserName:userFromStorage.username}};
-}
+  userFromStorage = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
+  
+
+   if(userFromStorage!==null)
+   {
+     configToken={ headers: {Authorization:"Bearer "+userFromStorage.token,UserName:userFromStorage.username}};
+   }
+   }
+   catch(error)
+   {
+     alert("Bad decrypt");
+   }
 }
   
 
@@ -112,12 +122,14 @@ if(userFromStorage!==null)
   }
   function handleEmailTokenVerificationAccepted(eToken)
   { 
-    sessionStorage.setItem("emailTokenStored",eToken)
+    var ciphertext = cryptoJs.AES.encrypt(eToken,simetricKeyS).toString();
+    sessionStorage.setItem("emailTokenStored",ciphertext);
+    setEmailTokenAccepted(eToken);
     props.setEmailToken(eToken);
-    axios.put(membersUrl+userFromStorage.id+onlineStatusEnd,2,configToken).then("you are online now").catch(function (error)
-  {
-    console.log(error);
-  });
+   // axios.put(membersUrl+userFromStorage.id+onlineStatusEnd,2,configToken).then("you are online now").catch(function (error)
+ // {
+  //  console.log(error);
+ // });
     setRedirectToHome(true)
   }
 
@@ -151,9 +163,11 @@ if(userFromStorage!==null)
  
    const classes=useStyle();
 
+
+
   if(redirectToHome)
   {
-    return <Navigate to={homeFrontEnd+sessionStorage.getItem("emailTokenStored")}/>
+    return <Navigate to={homeFrontEnd+emailTokenAccepted}/>
   }
 
   return (

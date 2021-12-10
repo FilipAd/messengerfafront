@@ -95,12 +95,20 @@ export default function Chat(props)
     let configToken=null;
   if(localStorage.getItem("user")!==null)
   {
+    try
+    {
     var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
     me = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
-  if(me!==null)
-  {
-   configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
-  }
+    
+     if(me!==null)
+     {
+       configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+     }
+     }
+     catch(error)
+     {
+       alert("Bad decrypt");
+     }
   }
  
     const classes=useStyle();
@@ -124,8 +132,8 @@ export default function Chat(props)
     {
         if(messagetxt!=="")
         {
-       // let msg={name:me.username,message:messagetxt};  vrati ovo
-       let msg={memberSenderUsername:me.username,text:messagetxt}; //ovo je dodano ako ne radi vrati iznad
+      
+       let msg={memberSenderUsername:me.username,text:messagetxt}; 
         props.setMessages([...props.messages,msg]);
       //  clientRef.sendMessage('/app/websocket-chat/'+props.receiver,JSON.stringify({message: messagetxt,name:me.username})); vrati ovo 
       clientRef.sendMessage('/app/websocket-chat/'+props.receiver.username,
@@ -178,7 +186,7 @@ export default function Chat(props)
             props.logout();
             if(props.receiver.username===(msg.memberSenderUsername))  
             props.setMessages([...props.messages,msg]);
-            console.log(msg);
+          
         }}
 
         onError={()=>{alert("Disconnected");}}

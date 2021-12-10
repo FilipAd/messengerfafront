@@ -110,13 +110,21 @@ export default function CertificateUploadForm(props) {
    let configToken=null;
  if(localStorage.getItem("user")!==null)
  {
-   console.log("izvrsava se u home ovo za kripto")
+    try
+   {
    var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
    me = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
- if(me!==null)
- {
-  configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
- }
+   
+ 
+    if(me!==null)
+    {
+      configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+    }
+    }
+    catch(error)
+    {
+      alert("Bad decrypt");
+    }
  }
 
    function onFileChangeHandler(e){
@@ -131,7 +139,7 @@ export default function CertificateUploadForm(props) {
      }
      else
      {
-     alert("prevelik fajl");
+     alert("file is too large");
      setSelectedFile(null);
      setUploadEnabled(true);
      }

@@ -109,12 +109,21 @@ export default function Sidebar(props)
     let configToken=null;
   if(localStorage.getItem("user")!==null)
   {
+    try
+    {
     var bytes = cryptoJs.AES.decrypt(localStorage.getItem("user"),simetricKeyS);
     me = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
-  if(me!==null)
-  {
-   configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
-  }
+    
+  
+     if(me!==null)
+     {
+       configToken={ headers: {Authorization:"Bearer "+me.token,UserName:me.username}};
+     }
+     }
+     catch(error)
+     {
+       alert("Bad decrypt");
+     }
   }
  
  
